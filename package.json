@@ -1,0 +1,25 @@
+{
+  "name": "momentum-server",
+  "version": "1.0.0",
+  "description": "backend for momentum",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tscavone/momentum-server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tscavone/momentum-server/issues"
+  },
+  "homepage": "https://github.com/tscavone/momentum-server#readme",
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "typescript": "^4.7.3"
+  }
+}
