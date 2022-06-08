@@ -26,3 +26,4 @@ debug.ts*
 server/.env
 /.env
 dist
+/migrations.json

@@ -1,6 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
+import { MongoClient, ServerApiVersion } from "mongodb";
 
 const app = express();
 // parse application/x-www-form-urlencoded
@@ -44,11 +45,8 @@ app.post("/login", (req, res) => {
 // })
 
 const connectToDb = () => {
-  const { MongoClient, ServerApiVersion } = require("mongodb");
   const uri = process.env.DBCONN + process.env.DBSTR;
   const client = new MongoClient(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
     serverApi: ServerApiVersion.v1,
   });
   client.connect((err) => {
@@ -58,6 +56,7 @@ const connectToDb = () => {
   });
   return Promise.resolve("db connected");
 };
+
 const port = 3001;
 
 connectToDb()
