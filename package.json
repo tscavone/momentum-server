@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/tscavone/momentum-server#readme",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "body-parser": "^1.20.0",
     "cors": "^2.8.5",
     "dot-env": "^0.0.1",
@@ -25,5 +26,8 @@
     "mongo-migrate-ts": "^1.1.0",
     "mongodb": "^4.7.0",
     "typescript": "^4.7.3"
+  },
+  "devDependencies": {
+    "typescript-json-schema": "^0.53.1"
   }
 }
