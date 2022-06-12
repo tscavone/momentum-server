@@ -1,0 +1,11 @@
+{
+    "_id": "9999999",
+    "username": "joe",
+    "password": "abc",
+    "first": "joe",
+    "last": "smith",
+    "email": "joesmith@gmail.com",
+    "created": "2022/09/05",
+    "updated": "2022/09/05",
+    "deleted": ""
+}
