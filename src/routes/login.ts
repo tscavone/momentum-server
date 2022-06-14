@@ -25,7 +25,7 @@ router.post('/login', async (req, res) => {
     }
 
     const joe = await Persistence.instance().findUser(username)
-    console.log(joe)
+
     if (joe) {
         res.send({
             token: 'abc123',

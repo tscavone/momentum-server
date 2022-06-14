@@ -1,7 +1,7 @@
 {
     "_id": "9999999",
     "username": "joe",
-    "password": "abc",
+    "password": "$2b$18$rMX/PWjTX.oahwj2LcVauex.1sxWupljWW3/gA.E4ALaBNU88vsz6",
     "first": "joe",
     "last": "smith",
     "email": "joesmith@gmail.com",

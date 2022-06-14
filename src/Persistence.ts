@@ -1,4 +1,5 @@
 import { MongoClient, Db } from 'mongodb'
+import { IDataUser } from './shared/data_definitions/AuthedUserDefinitions'
 
 export class Persistence {
     private _db: Db
@@ -21,7 +22,7 @@ export class Persistence {
     }
 
     async findUser(username: string) {
-        return this._db.collection('users').findOne({ username })
+        return this._db.collection<IDataUser>('users').findOne({ username })
     }
     static instance() {
         return Persistence._instance
