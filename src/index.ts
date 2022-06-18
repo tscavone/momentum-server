@@ -1,3 +1,5 @@
+import { QueryResponse } from './shared/data_definitions/NetworkDefinitions'
+
 var express = require('express')
 var bodyParser = require('body-parser')
 var cors = require('cors')
@@ -27,10 +29,16 @@ Persistence.instance()
             console.log('Path: ', req.path)
             console.error('Error: ', error)
 
-            if (error.type == 'time-out')
-                // arbitrary condition check
-                res.status(408).send(error)
-            else res.status(500).send(error)
+            const errorResponse: QueryResponse = {
+                errorMessage: error.message,
+            }
+            if (res.headersSent) {
+                return next(error)
+            } else if (error.name === 'unauthorized') {
+                res.status(408).send(errorResponse)
+            } else {
+                res.status(500).send(errorResponse)
+            }
         })
 
         // start the Express server

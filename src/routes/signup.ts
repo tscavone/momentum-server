@@ -1,28 +1,31 @@
 import express from 'express'
 import bcrypt from 'bcrypt'
 import { IDataUser } from '../shared/data_definitions/AuthedUserDefinitions'
-import {
-    dateToString,
-    checkRequiredFields as checkRequiredFields,
-} from '../shared/utils'
-import { isGetAccessor } from 'typescript'
+import { dateToString, checkRequiredFields } from '../shared/utils'
+import { QueryResponse } from '../shared/data_definitions/NetworkDefinitions'
 import { Persistence } from '../Persistence'
 
 const router = express.Router()
 
+const errorOut = (message: string, errorName: string, next) => {
+    let error = new Error(message)
+    error.name = errorName
+    next(error)
+}
+
 router.post('/signup', async (req, res, next) => {
     let user: IDataUser = {} as IDataUser
 
-    try {
+    if (
         checkRequiredFields(
-            ['_id', 'username', 'password', 'email', 'storage'],
+            ['_id', 'username', 'password', 'email'],
             req.body,
-            '/signup'
+            '/signup',
+            next
         )
-    } catch (error) {
-        // manually catching
-        next(error) // passing to default middleware error handler
-    }
+    )
+        return
+
     const now = new Date()
 
     user._id = req.body._id
@@ -35,7 +38,7 @@ router.post('/signup', async (req, res, next) => {
     user.deleted = ''
 
     if (await Persistence.instance().findUser(user.username)) {
-        next(new Error(`Username: "${user.username}" already exists`))
+        errorOut(`${user.username} already exists`, 'unauthorized', next)
         return
     }
 
@@ -47,12 +50,27 @@ router.post('/signup', async (req, res, next) => {
     const salt = await bcrypt.genSalt(parseInt(process.env.salt))
     user.password = await bcrypt.hash(req.body.password, salt)
 
-    console.log(`user signed up:`, user.password)
+    try {
+        console.log(user)
+        const result = await Persistence.instance().insertUser(user)
 
-    res.send({
-        token: 'abc123',
-        userId: user._id,
-    })
+        let queryResponse: QueryResponse = null
+        if (result) {
+            queryResponse = {
+                successMessage: 'successfully created user',
+                payload: {
+                    token: 'abc123',
+                    userId: user._id,
+                },
+            }
+            res.status(201).send(queryResponse)
+        } else {
+            errorOut('unable to create user', 'internal', next)
+            return
+        }
+    } catch (error) {
+        errorOut('unable to create user', 'internal', next)
+    }
 })
 
 module.exports = router
