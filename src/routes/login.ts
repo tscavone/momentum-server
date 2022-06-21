@@ -20,7 +20,7 @@ router.post('/login', async (req, res) => {
     const username = req.body.username
     const password = req.body.password
 
-    let unauthorized = new Error(`user ${username} unauthoized`)
+    let unauthorized = new Error(`user ${username} unauthorized`)
     unauthorized.name = 'unauthorized'
     //for testing
     if (
