@@ -18,7 +18,7 @@ router.post('/signup', async (req, res, next) => {
 
     if (
         checkRequiredFields(
-            ['_id', 'username', 'password', 'email'],
+            ['_id', 'username', 'password', 'email', 'storage'],
             req.body,
             '/signup',
             next
@@ -36,6 +36,7 @@ router.post('/signup', async (req, res, next) => {
     user.created = dateToString(now)
     user.updated = dateToString(now)
     user.deleted = ''
+    user.storage = user.storage
 
     if (await Persistence.instance().findUser(user.username)) {
         errorOut(`${user.username} already exists`, 'unauthorized', next)
@@ -57,9 +58,8 @@ router.post('/signup', async (req, res, next) => {
         let queryResponse: QueryResponse = null
         if (result) {
             queryResponse = {
-                successMessage: 'successfully created user',
+                successMessage: `successfully created ${user.username}, please login`,
                 payload: {
-                    token: 'abc123',
                     userId: user._id,
                 },
             }
