@@ -5,12 +5,20 @@ import bcrypt from 'bcrypt'
 
 const router = express.Router()
 
-const login = (username: string, userId: string, token: string, res): void => {
+const login = (
+    username: string,
+    userId: string,
+    token: string,
+    res,
+    storage?: string
+): void => {
     let queryResponse: QueryResponse = {} as QueryResponse
     queryResponse.successMessage = `${username} logged in`
+    storage = storage || 'test'
     queryResponse.payload = {
         userId,
         token,
+        storage,
     }
 
     res.status(200).send(queryResponse)
@@ -46,7 +54,7 @@ router.post('/login', async (req, res) => {
             throw unauthorized
         }
 
-        login(username, user._id, 'abc123', res)
+        login(username, user._id, 'abc123', res, user.storage)
         return
     } else {
         throw unauthorized

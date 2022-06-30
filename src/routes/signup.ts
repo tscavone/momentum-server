@@ -36,7 +36,7 @@ router.post('/signup', async (req, res, next) => {
     user.created = dateToString(now)
     user.updated = dateToString(now)
     user.deleted = ''
-    user.storage = user.storage
+    user.storage = req.body.storage
 
     if (await Persistence.instance().findUser(user.username)) {
         errorOut(`${user.username} already exists`, 'unauthorized', next)

@@ -13,7 +13,6 @@ export class Persistence {
     async init() {
         const uri = process.env.MONGO_MIGRATE_URI
 
-        console.log('uri: ', uri)
         const client = new MongoClient(uri)
 
         await client.connect()
