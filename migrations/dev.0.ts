@@ -35,6 +35,9 @@ export class MyMigration implements MigrationInterface {
                 storage: {
                     type: 'string',
                 },
+                status: {
+                    type: 'number',
+                },
             },
             required: [
                 '_id',
@@ -47,6 +50,7 @@ export class MyMigration implements MigrationInterface {
                 'updated',
                 'username',
                 'storage',
+                'status',
             ],
             type: 'object',
         }

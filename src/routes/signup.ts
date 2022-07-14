@@ -1,9 +1,9 @@
 import express from 'express'
 import bcrypt from 'bcrypt'
-import { IDataUser } from '../shared/data_definitions/AuthedUserDefinitions'
 import { dateToString, checkRequiredFields } from '../shared/utils'
 import { QueryResponse } from '../shared/data_definitions/NetworkDefinitions'
 import { Persistence } from '../Persistence'
+import { IPersistenceUser, UserStatus } from '../PersistenceDefinitions'
 
 const router = express.Router()
 
@@ -14,7 +14,7 @@ const errorOut = (message: string, errorName: string, next) => {
 }
 
 router.post('/signup', async (req, res, next) => {
-    let user: IDataUser = {} as IDataUser
+    let user: IPersistenceUser = {} as IPersistenceUser
 
     if (
         checkRequiredFields(
@@ -37,6 +37,7 @@ router.post('/signup', async (req, res, next) => {
     user.updated = dateToString(now)
     user.deleted = ''
     user.storage = req.body.storage
+    user.status = UserStatus.needsInit
 
     if (await Persistence.instance().findUser(user.username)) {
         errorOut(`${user.username} already exists`, 'unauthorized', next)
@@ -52,7 +53,6 @@ router.post('/signup', async (req, res, next) => {
     user.password = await bcrypt.hash(req.body.password, salt)
 
     try {
-        console.log(user)
         const result = await Persistence.instance().insertUser(user)
 
         let queryResponse: QueryResponse = null
@@ -70,6 +70,7 @@ router.post('/signup', async (req, res, next) => {
         }
     } catch (error) {
         errorOut('unable to create user', 'internal', next)
+        console.log('db error:', error)
     }
 })
 

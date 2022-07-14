@@ -18,6 +18,8 @@ app.use(bodyParser.json())
 app.use(cors())
 app.use(require('./routes/login'))
 app.use(require('./routes/signup'))
+app.use(require('./routes/data'))
+app.use(require('./routes/form'))
 const port = 3001
 
 Persistence.instance()

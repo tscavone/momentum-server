@@ -1,10 +1,11 @@
-import { MongoClient, Db, WithId, InsertOneResult } from 'mongodb'
-import { IDataUser } from './shared/data_definitions/AuthedUserDefinitions'
+import { MongoClient, Db, WithId, InsertOneResult, UpdateResult } from 'mongodb'
+import { IPersistenceUser, UserStatus } from './PersistenceDefinitions'
 
 export class Persistence {
     private _db: Db
     private static _instance: Persistence = new Persistence()
     private static DB_NAME = 'momentum'
+    private static USERS_COLUMN: string = 'users'
 
     private constructor() {
         this._db = null
@@ -20,12 +21,33 @@ export class Persistence {
         this._db = client.db(Persistence.DB_NAME)
     }
 
-    async findUser(username: string): Promise<WithId<IDataUser>> {
-        return this._db.collection<IDataUser>('users').findOne({ username })
+    async findUser(username: string): Promise<WithId<IPersistenceUser>> {
+        return this._db
+            .collection<IPersistenceUser>(Persistence.USERS_COLUMN)
+            .findOne({ username })
     }
 
-    async insertUser(newUser: IDataUser): Promise<InsertOneResult<IDataUser>> {
-        return this._db.collection<IDataUser>('users').insertOne(newUser)
+    async insertUser(
+        newUser: IPersistenceUser
+    ): Promise<InsertOneResult<IPersistenceUser>> {
+        return this._db
+            .collection<IPersistenceUser>(Persistence.USERS_COLUMN)
+            .insertOne(newUser)
+    }
+
+    async updateUser(user: IPersistenceUser): Promise<UpdateResult> {
+        return this._db
+            .collection<IPersistenceUser>(Persistence.USERS_COLUMN)
+            .updateOne(
+                {
+                    _id: user._id,
+                },
+                {
+                    $set: {
+                        status: UserStatus.initialized,
+                    },
+                }
+            )
     }
 
     static instance() {
